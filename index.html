@@ -2,17 +2,153 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login Membro</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Carteirinha Membro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+            flex-direction: column;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 300px;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            background-color: #0097b2;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #00758a;
+        }
+        img {
+            max-width: 150px;
+            border-radius: 50%;
+            margin: 10px 0;
+        }
+        #carteirinha {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>Login Membro</h1>
+    <div class="container" id="loginContainer">
+        <h2>Login Membro</h2>
         <input type="email" id="email" placeholder="Seu email">
         <button onclick="login()">Entrar</button>
         <p id="msg"></p>
     </div>
-    <script src="api.js"></script>
-    <script src="main.js"></script>
+
+    <div class="container" id="carteirinha">
+        <h2 id="nome">Nome</h2>
+        <img id="foto" src="" alt="Foto do Membro">
+        <p id="cargo">Cargo</p>
+        <button onclick="gerarPDF()">Gerar PDF</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        const SPREADSHEET_ID = "10pOvl8cvPmXxR9a8McSnXF2xPiGdBKxm14c3mYaXi4I"; // substitua pelo seu ID
+
+        // Função para buscar membros da planilha
+        async function buscarMembros() {
+            try {
+                const url = `https://spreadsheets.google.com/feeds/list/${SPREADSHEET_ID}/od6/public/values?alt=json`;
+                const res = await fetch(url);
+                if(!res.ok) throw new Error("Erro ao acessar a planilha");
+                const data = await res.json();
+
+                // Mapear apenas Nome, Email, Cargo, Foto
+                const membros = data.feed.entry.map(item => ({
+                    nome: item.gsx$nome.$t || "",
+                    email: item.gsx$email.$t || "",
+                    cargo: item.gsx$cargo.$t || "",
+                    foto: item.gsx$foto.$t || ""
+                }));
+                return membros;
+
+            } catch (error) {
+                console.error("Erro ao buscar membros:", error);
+                return [];
+            }
+        }
+
+        async function login() {
+            const emailInput = document.getElementById('email').value.toLowerCase().trim();
+            if(!emailInput) {
+                document.getElementById('msg').innerText = "Digite seu email!";
+                return;
+            }
+
+            const membros = await buscarMembros();
+            const membro = membros.find(m => m.email.toLowerCase().trim() === emailInput);
+
+            if (membro) {
+                // Mostrar a carteirinha
+                document.getElementById('loginContainer').style.display = "none";
+                document.getElementById('carteirinha').style.display = "block";
+
+                document.getElementById('nome').innerText = membro.nome;
+                document.getElementById('cargo').innerText = membro.cargo;
+                document.getElementById('foto').src = membro.foto;
+
+            } else {
+                document.getElementById('msg').innerText = "Email não encontrado!";
+            }
+        }
+
+        async function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const nome = document.getElementById('nome').innerText;
+            const cargo = document.getElementById('cargo').innerText;
+            const foto = document.getElementById('foto').src;
+
+            doc.text(nome, 20, 20);
+            doc.text(cargo, 20, 30);
+
+            if(foto) {
+                try {
+                    const img = await convertImgToBase64(foto);
+                    doc.addImage(img, 'JPEG', 20, 40, 50, 50);
+                } catch(err) {
+                    console.error("Erro ao adicionar imagem no PDF:", err);
+                }
+            }
+
+            doc.save(`${nome}_carteirinha.pdf`);
+        }
+
+        // Converte imagem externa para Base64
+        async function convertImgToBase64(url) {
+            const res = await fetch(url);
+            const blob = await res.blob();
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+            });
+        }
+    </script>
 </body>
 </html>
