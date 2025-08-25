@@ -50,7 +50,7 @@ th, td { border:1px solid #ccc; padding:6px; text-align:center;}
 let membroAtual = null;
 
 // Lista de emails de admin (substitua pelos seus)
-const admins = ["seuemail@gmail.com"];
+const admins = ["ds.veronez@gmail.com"];
 
 // Função chamada pelo Google após login
 function handleCredentialResponse(response) {
@@ -111,7 +111,7 @@ function parseJwt (token) {
 // Inicializa botão de login Google
 window.onload = function(){
     google.accounts.id.initialize({
-        client_id: "SEU_CLIENT_ID_AQUI",
+        client_id: "865470145994-cv9p33gvuoa05kt2m9gbs3rs0vrto4db.apps.googleusercontent.com",
         callback: handleCredentialResponse
     });
     google.accounts.id.renderButton(
