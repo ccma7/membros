@@ -2,15 +2,16 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Carteirinha Membro</title>
+    <title>Carteirinha & Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
             flex-direction: column;
         }
         .container {
@@ -19,9 +20,9 @@
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             text-align: center;
-            width: 300px;
+            margin-bottom: 20px;
         }
-        input {
+        input, select {
             padding: 10px;
             width: 80%;
             margin: 10px 0;
@@ -29,56 +30,92 @@
             border: 1px solid #ccc;
         }
         button {
-            padding: 10px 20px;
+            padding: 8px 15px;
             border: none;
             border-radius: 6px;
             background-color: #0097b2;
             color: white;
             cursor: pointer;
             font-weight: bold;
+            margin: 2px;
         }
         button:hover {
             background-color: #00758a;
         }
         img {
-            max-width: 150px;
+            max-width: 100px;
             border-radius: 50%;
             margin: 10px 0;
         }
-        #carteirinha {
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        #carteirinha, #dashboard {
             display: none;
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
+
+    <!-- Login -->
     <div class="container" id="loginContainer">
-        <h2>Login Membro</h2>
+        <h2>Login</h2>
         <input type="email" id="email" placeholder="Seu email">
+        <select id="tipoUsuario">
+            <option value="membro">Membro</option>
+            <option value="admin">Administrador</option>
+        </select>
         <button onclick="login()">Entrar</button>
         <p id="msg"></p>
     </div>
 
+    <!-- Carteirinha do Membro -->
     <div class="container" id="carteirinha">
         <h2 id="nome">Nome</h2>
         <img id="foto" src="" alt="Foto do Membro">
         <p id="cargo">Cargo</p>
-        <button onclick="gerarPDF()">Gerar PDF</button>
+        <button onclick="gerarPDFMembro()">Gerar PDF</button>
+        <button onclick="logout()">Sair</button>
+    </div>
+
+    <!-- Dashboard do Admin -->
+    <div class="container" id="dashboard">
+        <h2>Dashboard do Administrador</h2>
+        <table id="tabelaMembros">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Cargo</th>
+                    <th>Foto</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button onclick="gerarPDFTodos()">Gerar PDF de Todos</button>
+        <button onclick="logout()">Sair</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         const SPREADSHEET_ID = "10pOvl8cvPmXxR9a8McSnXF2xPiGdBKxm14c3mYaXi4I"; // substitua pelo seu ID
+        let membros = [];
 
-        // Função para buscar membros da planilha
+        // Buscar membros da planilha
         async function buscarMembros() {
             try {
                 const url = `https://spreadsheets.google.com/feeds/list/${SPREADSHEET_ID}/od6/public/values?alt=json`;
                 const res = await fetch(url);
                 if(!res.ok) throw new Error("Erro ao acessar a planilha");
                 const data = await res.json();
-
-                // Mapear apenas Nome, Email, Cargo, Foto
                 const membros = data.feed.entry.map(item => ({
                     nome: item.gsx$nome.$t || "",
                     email: item.gsx$email.$t || "",
@@ -86,69 +123,123 @@
                     foto: item.gsx$foto.$t || ""
                 }));
                 return membros;
-
-            } catch (error) {
-                console.error("Erro ao buscar membros:", error);
+            } catch (err) {
+                console.error(err);
                 return [];
             }
         }
 
+        // Login
         async function login() {
             const emailInput = document.getElementById('email').value.toLowerCase().trim();
-            if(!emailInput) {
-                document.getElementById('msg').innerText = "Digite seu email!";
-                return;
-            }
+            const tipo = document.getElementById('tipoUsuario').value;
+            if(!emailInput) { document.getElementById('msg').innerText = "Digite seu email!"; return; }
 
-            const membros = await buscarMembros();
-            const membro = membros.find(m => m.email.toLowerCase().trim() === emailInput);
-
-            if (membro) {
-                // Mostrar a carteirinha
+            membros = await buscarMembros();
+            if(tipo === "membro") {
+                const membro = membros.find(m => m.email.toLowerCase().trim() === emailInput);
+                if(membro) {
+                    document.getElementById('loginContainer').style.display = "none";
+                    document.getElementById('carteirinha').style.display = "block";
+                    document.getElementById('nome').innerText = membro.nome;
+                    document.getElementById('cargo').innerText = membro.cargo;
+                    document.getElementById('foto').src = membro.foto;
+                } else {
+                    document.getElementById('msg').innerText = "Email não encontrado!";
+                }
+            } else { // admin
                 document.getElementById('loginContainer').style.display = "none";
-                document.getElementById('carteirinha').style.display = "block";
-
-                document.getElementById('nome').innerText = membro.nome;
-                document.getElementById('cargo').innerText = membro.cargo;
-                document.getElementById('foto').src = membro.foto;
-
-            } else {
-                document.getElementById('msg').innerText = "Email não encontrado!";
+                document.getElementById('dashboard').style.display = "block";
+                carregarDashboard();
             }
         }
 
-        async function gerarPDF() {
+        // Logout
+        function logout() {
+            document.getElementById('loginContainer').style.display = "block";
+            document.getElementById('carteirinha').style.display = "none";
+            document.getElementById('dashboard').style.display = "none";
+            document.getElementById('email').value = "";
+            document.getElementById('msg').innerText = "";
+        }
+
+        // Dashboard
+        function carregarDashboard() {
+            const tbody = document.querySelector("#tabelaMembros tbody");
+            tbody.innerHTML = "";
+            membros.forEach((m, i) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><input type="text" value="${m.nome}" id="nome-${i}"></td>
+                    <td>${m.email}</td>
+                    <td><input type="text" value="${m.cargo}" id="cargo-${i}"></td>
+                    <td><img src="${m.foto}" width="50"></td>
+                    <td>
+                        <button onclick="editarMembro(${i})">Salvar</button>
+                        <button onclick="excluirMembro(${i})">Excluir</button>
+                        <button onclick="gerarPDF(${i})">PDF</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function editarMembro(i) {
+            membros[i].nome = document.getElementById(`nome-${i}`).value;
+            membros[i].cargo = document.getElementById(`cargo-${i}`).value;
+            alert(`Membro ${membros[i].nome} atualizado (simulado)`);
+        }
+
+        function excluirMembro(i) {
+            if(confirm(`Deseja realmente excluir ${membros[i].nome}?`)) {
+                membros.splice(i, 1);
+                carregarDashboard();
+            }
+        }
+
+        async function gerarPDF(i) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const m = membros[i];
+            doc.text(m.nome, 20, 20);
+            doc.text(m.cargo, 20, 30);
+            if(m.foto) { const img = await convertImgToBase64(m.foto); doc.addImage(img,'JPEG',20,40,50,50);}
+            doc.save(`${m.nome}_carteirinha.pdf`);
+        }
+
+        async function gerarPDFTodos() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let y = 20;
+            for(const m of membros){
+                doc.text(m.nome,20,y);
+                doc.text(m.cargo,20,y+10);
+                if(m.foto){const img=await convertImgToBase64(m.foto); doc.addImage(img,'JPEG',20,y+20,50,50);}
+                y+=80;
+                if(y>250){doc.addPage(); y=20;}
+            }
+            doc.save("carteirinhas_todos.pdf");
+        }
+
+        async function gerarPDFMembro(){
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const nome = document.getElementById('nome').innerText;
             const cargo = document.getElementById('cargo').innerText;
             const foto = document.getElementById('foto').src;
-
-            doc.text(nome, 20, 20);
-            doc.text(cargo, 20, 30);
-
-            if(foto) {
-                try {
-                    const img = await convertImgToBase64(foto);
-                    doc.addImage(img, 'JPEG', 20, 40, 50, 50);
-                } catch(err) {
-                    console.error("Erro ao adicionar imagem no PDF:", err);
-                }
-            }
-
+            doc.text(nome,20,20);
+            doc.text(cargo,20,30);
+            if(foto){const img=await convertImgToBase64(foto); doc.addImage(img,'JPEG',20,40,50,50);}
             doc.save(`${nome}_carteirinha.pdf`);
         }
 
-        // Converte imagem externa para Base64
-        async function convertImgToBase64(url) {
-            const res = await fetch(url);
-            const blob = await res.blob();
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.readAsDataURL(blob);
-            });
+        async function convertImgToBase64(url){
+            const res=await fetch(url);
+            const blob=await res.blob();
+            return new Promise((resolve)=>{const reader=new FileReader(); reader.onloadend=()=>resolve(reader.result); reader.readAsDataURL(blob);});
         }
+
     </script>
+
 </body>
 </html>
