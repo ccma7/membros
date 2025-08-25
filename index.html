@@ -82,7 +82,7 @@ function handleCredentialResponse(response){
     buscarMembro(email).then(m=>{
         if(!m){
             alert("Você não está cadastrado. Preencha o formulário da comunidade.");
-            window.location.href="https://docs.google.com/forms/d/e/1FAIpQLSdXSAlqdXIBiY8yxn3KYR3Pr7V4pbLZOrS7SyFYcO9iwh7Ucw/viewform?usp=pp_url&entry.1111111111="+nomeGoogle+"&entry.2222222222="+email;
+            window.location.href="hhttps://forms.gle/RUdXEfiU7m4XSbF27?usp=pp_url&entry.1111111111="+nomeGoogle+"&entry.2222222222="+email;
             return;
         }
         if(m.status!=="Ativo"){
