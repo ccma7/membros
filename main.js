@@ -12,9 +12,7 @@ async function login() {
     const membro = membros.find(m => m.email.toLowerCase().trim() === emailInput);
 
     if (membro) {
-        // Salvar dados no localStorage
         localStorage.setItem('membroLogado', JSON.stringify(membro));
-        // Redirecionar para a carteirinha
         window.location.href = "carteirinha.html";
     } else {
         document.getElementById('msg').innerText = "Email não encontrado!";
