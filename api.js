@@ -1,5 +1,5 @@
 // Substitua pelo ID da sua planilha
-const SPREADSHEET_ID = "10pOvl8cvPmXxR9a8McSnXF2xPiGdBKxm14c3mYaXi4I";
+const SPREADSHEET_ID = "1B8_97S4WuXUMfaeGcrVDNnABc87hCD_UQEDU135Q3i8";
 
 // Função para buscar todos os membros da planilha publicada
 async function buscarMembros() {
