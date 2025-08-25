@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Carteirinha</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="carteirinha" id="carteirinha">
+        <h2 id="nome">Nome</h2>
+        <img id="foto" src="" alt="Foto do Membro">
+        <p id="cargo">Cargo</p>
+        <button onclick="gerarPDF()">Gerar PDF</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        const membro = JSON.parse(localStorage.getItem('membroLogado'));
+
+        if(membro) {
+            document.getElementById('nome').innerText = membro.nome;
+            document.getElementById('cargo').innerText = membro.cargo;
+            document.getElementById('foto').src = membro.foto;
+        }
+
+        async function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text(membro.nome, 20, 20);
+            doc.text(membro.cargo, 20, 30);
+            doc.addImage(membro.foto, 'JPEG', 20, 40, 50, 50);
+            doc.save("carteirinha.pdf");
+        }
+    </script>
+</body>
+</html>
