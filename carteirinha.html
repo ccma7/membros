@@ -21,6 +21,8 @@
             document.getElementById('nome').innerText = membro.nome;
             document.getElementById('cargo').innerText = membro.cargo;
             document.getElementById('foto').src = membro.foto;
+        } else {
+            document.getElementById('nome').innerText = "Membro não encontrado";
         }
 
         async function gerarPDF() {
@@ -29,7 +31,7 @@
             doc.text(membro.nome, 20, 20);
             doc.text(membro.cargo, 20, 30);
             doc.addImage(membro.foto, 'JPEG', 20, 40, 50, 50);
-            doc.save("carteirinha.pdf");
+            doc.save(`${membro.nome}_carteirinha.pdf`);
         }
     </script>
 </body>
