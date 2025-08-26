@@ -48,6 +48,18 @@ th, td{
     text-align:center;
 }
 tr:nth-child(even){background:#f9f9f9;}
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0,151,178,.3);
+    border-radius: 50%;
+    border-top-color: #0097b2;
+    animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 @media(max-width:480px){
     .container{padding:15px;width:95%;}
     table, th, td{font-size:14px;}
@@ -76,6 +88,9 @@ tr:nth-child(even){background:#f9f9f9;}
 </div>
 
 <!-- Tabela de membros -->
+<div id="loadingDiv" style="display:none;">
+    <p>Carregando dados... <span class="loading"></span></p>
+</div>
 <table id="tabelaMembros">
 <thead>
 <tr>
@@ -90,9 +105,9 @@ tr:nth-child(even){background:#f9f9f9;}
 </div>
 
 <script>
-const sheetID = "17BYpWVD-AcESh227hRor6TMkOpbfw34LUOz6b-g91vw"; // seu ID da planilha
+const sheetID = "17BYpWVD-AcESh227hRor6TMkOpbfw34LUOz6b-g91vw";
 // Substitua pela URL do seu Apps Script publicado
-const scriptURL = "https://script.google.com/macros/s/SUA_URL_AQUI/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbwd7msqA560CTzPyzMUKxc4vQ_aUWP2JWU0wVly9jDDOwQUXPDIa8jzA-yvgfjWHlMhBA/exec";
 let membros = [];
 
 // Login admin
@@ -100,8 +115,10 @@ function loginAdmin(){
     const user = document.getElementById('adminUser').value;
     const pass = document.getElementById('adminPass').value;
     if(user === "admin" && pass === "777ccma777"){
-        document.getElementById('loginDiv').style.display="none";
-        document.getElementById('dashboardDiv').style.display="block";
+        document.getElementById('loginDiv').style.display = "none";
+        document.getElementById('dashboardDiv').style.display = "block";
+        document.getElementById('loadingDiv').style.display = "block";
+        document.getElementById('tabelaMembros').style.display = "none";
         carregarMembros();
     } else {
         alert("Usuário ou senha incorretos");
@@ -110,34 +127,44 @@ function loginAdmin(){
 
 // Logout
 function logout(){
-    document.getElementById('loginDiv').style.display="block";
-    document.getElementById('dashboardDiv').style.display="none";
+    document.getElementById('loginDiv').style.display = "block";
+    document.getElementById('dashboardDiv').style.display = "none";
 }
 
 // Buscar membros da planilha
 async function carregarMembros(){
     try {
+        // Limpar array de membros
+        membros = [];
+        
         const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
         const res = await fetch(url);
         const text = await res.text();
-        const json = JSON.parse(text.substr(47).slice(0, -2));
+        
+        // Extrair dados JSON da resposta
+        const json = JSON.parse(text.substring(47).slice(0, -2));
         const rows = json.table.rows;
         
-        membros = rows.map((r,i)=>({
-            nome: r.c[2]?.v || "", // Coluna C é o índice 2
-            email: r.c[3]?.v || "", // Coluna D é o índice 3
-            status: r.c[7]?.v || "Ativo" // Coluna H é o índice 7
-        }));
-        
-        // Remover cabeçalho se existir
-        if (membros.length > 0 && !membros[0].email) {
-            membros.shift();
+        // Processar cada linha (começando da linha 1 para pular o cabeçalho)
+        for(let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            if(row.c && row.c.length > 3) {
+                membros.push({
+                    nome: row.c[2] ? row.c[2].v : "",
+                    email: row.c[3] ? row.c[3].v : "",
+                    status: row.c[7] ? row.c[7].v : "Ativo"
+                });
+            }
         }
         
         preencherTabela();
+        
     } catch (error) {
         console.error("Erro ao carregar membros:", error);
-        alert("Erro ao carregar dados da planilha");
+        alert("Erro ao carregar dados da planilha. Verifique o console para mais detalhes.");
+    } finally {
+        document.getElementById('loadingDiv').style.display = "none";
+        document.getElementById('tabelaMembros').style.display = "table";
     }
 }
 
@@ -146,16 +173,23 @@ function preencherTabela(){
     const tbody = document.querySelector("#tabelaMembros tbody");
     tbody.innerHTML = "";
     
-    membros.forEach((m,index)=>{
+    if(membros.length === 0) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="4">Nenhum membro encontrado</td>`;
+        tbody.appendChild(tr);
+        return;
+    }
+    
+    membros.forEach((m, index)=>{
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${m.nome}</td>
-            <td>${m.email}</td>
-            <td>${m.status}</td>
+            <td>${m.nome || "N/A"}</td>
+            <td>${m.email || "N/A"}</td>
+            <td>${m.status || "Ativo"}</td>
             <td>
                 <select onchange="alterarStatus('${m.email}', this.value, ${index})">
-                    <option value="Ativo" ${m.status==="Ativo"?"selected":""}>Ativo</option>
-                    <option value="Inativo" ${m.status==="Inativo"?"selected":""}>Inativo</option>
+                    <option value="Ativo" ${m.status === "Ativo" ? "selected" : ""}>Ativo</option>
+                    <option value="Inativo" ${m.status === "Inativo" ? "selected" : ""}>Inativo</option>
                 </select>
             </td>
         `;
@@ -171,7 +205,7 @@ async function alterarStatus(email, novoStatus, index){
         preencherTabela();
         
         // Fazer requisição para o Google Apps Script
-        const url = `${https://script.google.com/macros/s/AKfycbwd7msqA560CTzPyzMUKxc4vQ_aUWP2JWU0wVly9jDDOwQUXPDIa8jzA-yvgfjWHlMhBA/exec}?email=${encodeURIComponent(email)}&status=${encodeURIComponent(novoStatus)}`;
+        const url = `${scriptURL}?email=${encodeURIComponent(email)}&status=${encodeURIComponent(novoStatus)}`;
         const res = await fetch(url);
         const text = await res.text();
         
@@ -192,7 +226,13 @@ async function alterarStatus(email, novoStatus, index){
 // Abrir carteirinha de um membro
 function abrirCarteirinha(){
     const email = document.getElementById('emailCarteirinha').value.trim().toLowerCase();
-    const membro = membros.find(m => m.email && m.email.trim().toLowerCase() === email);
+    
+    if(!email) {
+        alert("Por favor, digite um email para buscar.");
+        return;
+    }
+    
+    const membro = membros.find(m => m.email && m.email.toLowerCase().trim() === email);
     
     if(!membro){
         alert("Membro não encontrado!");
