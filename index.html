@@ -1,210 +1,243 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carteirinha Web</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    #loginContainer {
-      text-align: center;
-    }
-    #carteirinha {
-      display: none;
-      width: 350px;
-      border: 2px solid #333;
-      border-radius: 10px;
-      padding: 15px;
-      background: #fff;
-    }
-    h2 {
-      text-align: center;
-      color: #007BFF; /* azul do título */
-    }
-    p {
-      margin: 5px 0;
-      font-size: 14px;
-    }
-    b {
-      font-weight: bold;
-    }
-    #idText {
-      color: #007BFF; /* azul no ID */
-      font-weight: bold;
-    }
-    #validadeText {
-      color: #8B0000; /* vermelho escuro */
-      font-weight: bold;
-    }
-    #foto {
-      display: block;
-      margin: 0 auto 10px auto;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #333;
-    }
-    button {
-      display: block;
-      width: 100%;
-      margin-top: 10px;
-      padding: 8px;
-      border: none;
-      border-radius: 5px;
-      background: #007BFF;
-      color: #fff;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Carteirinha Comunidade Cristã</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f0f0f0;
+    margin:0;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+.container{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    max-width:500px;
+    width:100%;
+    text-align:center;
+    margin-bottom:20px;
+}
+button{
+    padding:15px 25px;
+    border:none;
+    border-radius:6px;
+    background:#0097b2;
+    color:white;
+    cursor:pointer;
+    margin:5px;
+    font-weight:bold;
+    font-size:16px;
+}
+button:hover{background:#00758a;}
+img{
+    max-width:150px;
+    border-radius:50%;
+    margin:10px 0;
+}
+#carteirinha{display:none;}
+@media(max-width:480px){
+    .container { padding:30px; width:98%; }
+    img { max-width:180px; }
+    p { font-size:18px; margin:6px 0; }
+    button { width:100%; padding:14px 0; font-size:16px; }
+    h2 { font-size:24px; }
+}
+</style>
 </head>
 <body>
-  <div id="loginContainer">
-    <h2>Login</h2>
-    <div id="g_id_onload"
-         data-client_id="SEU_CLIENT_ID"
-         data-callback="handleCredentialResponse">
-    </div>
-    <div class="g_id_signin" data-type="standard"></div>
-  </div>
 
-  <div id="carteirinha">
-    <h2>Carteirinha</h2>
-    <img id="foto" src="" alt="Foto do usuário">
-    <p><b>ID:</b> <span id="idText"></span></p>
-    <p><b>Nome:</b> <span id="nomeText"></span></p>
-    <p><b>Nascimento:</b> <span id="nascText"></span></p>
-    <p><b>Endereço:</b> <span id="enderecoText"></span></p>
-    <p><b>Função:</b> <span id="funcaoText"></span></p>
-    <p><b>Idade:</b> <span id="idadeText"></span></p>
-    <p><b>Email:</b> <span id="emailText"></span></p>
-    <p><b>Status:</b> <span id="statusText"></span></p>
-    <p><b>Validade:</b> <span id="validadeText">31/12/2024</span></p>
-    <button onclick="baixarPDF()">Baixar PDF</button>
-    <button onclick="logout()">Sair</button>
-  </div>
+<div class="container" id="loginContainer">
+<h2 style="font-size:28px;">Login com Google</h2>
+<div id="g_id_onload"
+     data-client_id="865470145994-cv9p33gvuoa05kt2m9gbs3rs0vrto4db.apps.googleusercontent.com"
+     data-context="signin"
+     data-ux_mode="popup"
+     data-login_uri=""
+     data-auto_prompt="false">
+</div>
+<div class="g_id_signin" data-type="standard"></div>
+</div>
 
-  <script>
-    let membros = [];
-    let membroAtual = null;
+<div class="container" id="carteirinha">
+<h2 style="color:#0097b2;font-size:26px;">Carteirinha Comunidade Cristã</h2>
+<img id="foto" src="" alt="Foto do Membro">
+<p><b>ID:</b> <span id="idText"></span></p>
+<p><b>Nome:</b> <span id="nomeText"></span></p>
+<p><b>Data de Nascimento:</b> <span id="nascText"></span></p>
+<p><b>Endereço:</b> <span id="enderecoText"></span></p>
+<p><b>Função:</b> <span id="funcaoText"></span></p>
+<p><b>CPF:</b> <span id="idadeText"></span></p>
+<p><b>Email:</b> <span id="emailText"></span></p>
+<p><b>Status:</b> <span id="statusText"></span></p>
+<p><b>Validade: 12/2025</b></p>
+<p><b>Lei 9982/00 - Lei no 9.982, de 14 de julho de 2000</b></p>
+<img src="logo.png" style="width:80px;margin-top:10px;">
+<br>
+<button onclick="gerarPDF()">Gerar PDF</button>
+<button onclick="logout()">Sair</button>
+</div>
 
-    // Função para gerar ID sequencial automático
-    function gerarIdSequencial(email, index) {
-      return String(index + 1).padStart(3, '0');
+<script>
+const sheetID = "17BYpWVD-AcESh227hRor6TMkOpbfw34LUOz6b-g91vw"; 
+let membroAtual = null;
+
+// Função para formatar Data de Nascimento
+function formatarData(data){
+    if(!data) return "";
+    let dt;
+    if(!isNaN(data)){
+        dt = new Date((data - 25569) * 86400 * 1000);
+    } else {
+        dt = new Date(data);
     }
+    if(isNaN(dt.getTime())) return data;
+    const dia = String(dt.getDate()).padStart(2,'0');
+    const mes = String(dt.getMonth()+1).padStart(2,'0');
+    const ano = dt.getFullYear();
+    return `${dia}/${mes}/${ano}`;
+}
 
-    // Carrega a planilha
-    fetch("https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA/gviz/tq?tqx=out:json")
-      .then(res => res.text())
-      .then(txt => {
-        const json = JSON.parse(txt.substr(47).slice(0, -2));
-        membros = json.table.rows.map((r, i) => ({
-          nome: r.c[0]?.v || "",
-          nascimento: r.c[1]?.v || "",
-          endereco: r.c[2]?.v || "",
-          funcao: r.c[3]?.v || "",
-          idade: r.c[4]?.v || "",
-          email: r.c[5]?.v || "",
-          status: r.c[6]?.v || "",
-          foto: r.c[7]?.v || "",
-          validade: r.c[8]?.v || "31/12/2024",
-          id: gerarIdSequencial(r.c[5]?.v, i)
-        }));
-      });
+// Buscar membros da planilha
+async function buscarTodosMembros(){
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substr(47).slice(0, -2));
+    const rows = json.table.rows;
+    return rows.map((r,i)=>({
+        nome:r.c[1]?.v,
+        email:r.c[2]?.v,
+        funcao:r.c[3]?.v,
+        idade:r.c[4]?.v,
+        endereco:r.c[5]?.v,
+        foto:r.c[6]?.v,
+        status:r.c[7]?.v || "Ativo",
+        nascimento:r.c[8]?.v || "" 
+    }));
+}
 
-    // Login Google
-    function handleCredentialResponse(response) {
-      const data = jwt_decode(response.credential);
-      const emailGoogle = data.email;
-      const fotoGoogle = data.picture;
+// Gerar ID sequencial baseado no email
+function gerarIdSequencial(email, membros){
+    // Ordena membros pelo email para manter consistência
+    const todosEmails = membros.map(m=>m.email.toLowerCase()).sort();
+    const pos = todosEmails.indexOf(email.toLowerCase());
+    let numero = pos + 1; // posição vira número
+    return String(numero).padStart(3,"0"); // ex: 001, 002, 003
+}
 
-      const m = membros.find(x => x.email === emailGoogle);
-      if (!m) {
-        alert("Email não autorizado!");
-        return;
-      }
-
-      membroAtual = m;
-      document.getElementById('loginContainer').style.display = "none";
-      document.getElementById('carteirinha').style.display = "block";
-
-      document.getElementById('idText').innerText = m.id;
-      document.getElementById('nomeText').innerText = m.nome;
-      document.getElementById('nascText').innerText = m.nascimento;
-      document.getElementById('enderecoText').innerText = m.endereco;
-      document.getElementById('funcaoText').innerText = m.funcao;
-      document.getElementById('idadeText').innerText = m.idade;
-      document.getElementById('emailText').innerText = m.email;
-      document.getElementById('statusText').innerText = m.status;
-      document.getElementById('validadeText').innerText = m.validade;
-      document.getElementById('foto').src = m.foto || fotoGoogle;
+// Buscar membro pelo email
+async function buscarMembro(email){
+    const membros = await buscarTodosMembros();
+    const membro = membros.find(m=>m.email.trim().toLowerCase()===email.trim().toLowerCase());
+    if(membro){
+        membro.id = gerarIdSequencial(email, membros);
     }
+    return membro;
+}
 
-  // Baixar PDF (logo abaixo das informações)
-  function baixarPDF() {
+// Login Google
+function handleCredentialResponse(response){
+    const data = parseJwt(response.credential);
+    const email = data.email;
+    const nomeGoogle = data.name;
+    const fotoGoogle = data.picture;
+
+    buscarMembro(email).then(m=>{
+        if(!m){
+            alert("Você não está cadastrado. Preencha o formulário da comunidade.");
+            window.location.href="https://docs.google.com/forms/d/e/1FAIpQLSdXSAlqdXIBiY8yxn3KYR3Pr7V4pbLZOrS7SyFYcO9iwh7Ucw/viewform?usp=pp_url&entry.2005620554="+nomeGoogle+"&entry.1045781291="+email;
+            return;
+        }
+        if(m.status!=="Ativo"){
+            alert("Membro inativo");
+            logout();
+            return;
+        }
+        membroAtual = m;
+        document.getElementById('loginContainer').style.display="none";
+        document.getElementById('carteirinha').style.display="block";
+        document.getElementById('idText').innerText = m.id;
+        document.getElementById('nomeText').innerText = m.nome;
+        document.getElementById('nascText').innerText = formatarData(m.nascimento);
+        document.getElementById('enderecoText').innerText = m.endereco;
+        document.getElementById('funcaoText').innerText = m.funcao;
+        document.getElementById('idadeText').innerText = m.idade;
+        document.getElementById('emailText').innerText = m.email;
+        document.getElementById('statusText').innerText = m.status;
+        document.getElementById('foto').src = m.foto || fotoGoogle;
+    });
+}
+
+// Logout
+function logout(){
+    membroAtual=null;
+    document.getElementById('loginContainer').style.display="block";
+    document.getElementById('carteirinha').style.display="none";
+}
+
+// Gerar PDF
+async function gerarPDF(){
+    if(!membroAtual) return;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-
-    // Título
-    doc.setFontSize(18);
-    doc.setTextColor(0, 123, 255);
-    doc.text("Carteirinha", 105, 20, null, null, "center");
-
-    // Dados do usuário
+    doc.setFontSize(16);
+    doc.text("Carteirinha Comunidade Cristã",20,20);
     doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    let y = 40; // posição inicial
-    doc.text(`Nome: ${membroAtual.nome}`, 20, y); y += 10;
-    doc.text(`Nascimento: ${membroAtual.nascimento}`, 20, y); y += 10;
-    doc.text(`Endereço: ${membroAtual.endereco}`, 20, y); y += 10;
-    doc.text(`Função: ${membroAtual.funcao}`, 20, y); y += 10;
-    doc.text(`Idade: ${membroAtual.idade}`, 20, y); y += 10;
-    doc.text(`Email: ${membroAtual.email}`, 20, y); y += 10;
-    doc.text(`Status: ${membroAtual.status}`, 20, y); y += 10;
-
-    // ID em azul
-    doc.setTextColor(0, 123, 255);
-    doc.text(`ID: ${membroAtual.id}`, 20, y); y += 10;
-
-    // Validade em vermelho escuro
-    doc.setTextColor(139, 0, 0);
-    doc.text(`Validade: ${membroAtual.validade}`, 20, y);
-    y += 20;
-
-    // Foto/logo abaixo das informações
-    const foto = document.getElementById('foto').src;
-    if (foto) {
-      doc.addImage(foto, "JPEG", 70, y, 70, 70); // centralizado abaixo das infos
+    doc.text(`ID: ${membroAtual.id}`,20,30);
+    doc.text(`Nome: ${membroAtual.nome}`,20,40);
+    doc.text(`Data de Nascimento: ${formatarData(membroAtual.nascimento)}`,20,50);
+    doc.text(`Endereço: ${membroAtual.endereco}`,20,60);
+    doc.text(`Função: ${membroAtual.funcao}`,20,70);
+    doc.text(`CPF: ${membroAtual.idade}`,20,80);
+    doc.text(`Email: ${membroAtual.email}`,20,90);
+    doc.text(`Status: ${membroAtual.status}`,20,100);
+    if(membroAtual.foto){
+        const img = await convertImgToBase64(membroAtual.foto);
+        doc.addImage(img,'JPEG',150,20,40,40);
     }
+    const logo = await convertImgToBase64("logo.png");
+    doc.addImage(logo,'PNG',170,120,30,30);
+    doc.save(`${membroAtual.nome}_carteirinha.pdf`);
+}
 
-    // Salvar PDF
-    doc.save("carteirinha.pdf");
-  }
+async function convertImgToBase64(url){
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return new Promise(resolve=>{
+        const reader = new FileReader();
+        reader.onloadend = ()=>resolve(reader.result);
+        reader.readAsDataURL(blob);
+    });
+}
 
-    function logout() {
-      membroAtual = null;
-      document.getElementById('carteirinha').style.display = "none";
-      document.getElementById('loginContainer').style.display = "block";
-    }
+// Decodificar JWT Google
+function parseJwt(token){
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c=> '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    return JSON.parse(jsonPayload);
+}
 
-    // Decodificar JWT Google
-    function jwt_decode(token) {
-      return JSON.parse(atob(token.split('.')[1]));
-    }
-  </script>
+// Inicializar botão Google
+window.onload=function(){
+    google.accounts.id.initialize({
+        client_id: "865470145994-cv9p33gvuoa05kt2m9gbs3rs0vrto4db.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+    });
+    google.accounts.id.renderButton(
+        document.querySelector(".g_id_signin"),
+        { theme:"outline", size:"large", width:300, height:60 }
+    );
+    google.accounts.id.prompt();
+};
+</script>
 </body>
 </html>
