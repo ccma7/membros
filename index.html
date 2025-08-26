@@ -25,6 +25,50 @@ body{
     text-align:center;
     margin-bottom:20px;
 }
+/* ---- Login cel container ---- */
+.containerlg {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  margin: 40px auto 20px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.containerlg h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.containerlg input {
+  padding: 16px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.containerlg button {
+  padding: 16px;
+  font-size: 1.1rem;
+  background: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.containerlg button:hover {
+  background: #0056b3;
+}
+      
 button{
     padding:15px 25px;
     border:none;
@@ -43,13 +87,35 @@ img{
     margin:10px 0;
 }
 #carteirinha{display:none;}
-@media(max-width:480px){
+@media(max-width:600px){
     .container { padding:30px; width:98%; }
     img { max-width:180px; }
     p { font-size:18px; margin:6px 0; }
     button { width:100%; padding:14px 0; font-size:16px; }
     h2 { font-size:24px; }
 }
+/* ---- Ajustes para mobile ---- */
+@media (max-width: 600px) {
+  .containerlg {
+    max-width: 100%;
+    width: 100%;
+    height: 100vh;           /* ocupa a tela inteira */
+    margin: 0;
+    border-radius: 0;        /* sem bordas arredondadas */
+    justify-content: center; /* centraliza na vertical */
+    padding: 40px 20px;
+  }
+
+  .containerlg h2 {
+    font-size: 2rem;
+  }
+
+  .containerlg input,
+  .containerlg button {
+    font-size: 1.3rem;
+    padding: 18px;
+  }
+}  
 </style>
 </head>
 <body>
