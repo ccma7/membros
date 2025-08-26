@@ -123,8 +123,8 @@ async function carregarMembros(){
     const rows = json.table.rows;
     membros = rows.map((r,i)=>({
         id:r.c[8]?.v || (i+1),
-        nome:r.c[1]?.v,
-        email:r.c[2]?.v,
+        nome:r.c[2]?.v,
+        email:r.c[3]?.v,
         status:r.c[7]?.v || "Ativo"
     }));
     preencherTabela();
