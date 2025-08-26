@@ -204,7 +204,8 @@ async function gerarPDF(){
         doc.addImage(img,'JPEG',150,20,40,40);
     }
     const logo = await convertImgToBase64("logo.png");
-    doc.addImage(logo,'PNG',170,120,30,30);
+    // Logo posicionado abaixo das informações no canto esquerdo
+    doc.addImage(logo,'PNG',20,110,30,30);
     doc.save(`${membroAtual.nome}_carteirinha.pdf`);
 }
 
