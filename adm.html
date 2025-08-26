@@ -60,9 +60,14 @@ tr:nth-child(even){background:#f9f9f9;}
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
-@media(max-width:480px){
-    .container{padding:15px;width:95%;}
-    table, th, td{font-size:14px;}
+/* Ajustes para dispositivos móveis */
+@media (max-width: 600px) {
+  .container {
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  }
 }
 </style>
 </head>
