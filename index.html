@@ -6,25 +6,66 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-body{font-family:Arial,sans-serif;background:#f0f0f0;margin:0;padding:20px;display:flex;flex-direction:column;align-items:center;}
-.container{background:white;padding:20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.2);max-width:400px;width:100%;text-align:center;margin-bottom:20px;}
-button{padding:10px 20px;border:none;border-radius:6px;background:#0097b2;color:white;cursor:pointer;margin:5px;font-weight:bold;}
+body{
+    font-family:Arial,sans-serif;
+    background:#f0f0f0;
+    margin:0;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* Container maior para celular */
+.container{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    max-width:500px;
+    width:100%;
+    text-align:center;
+    margin-bottom:20px;
+}
+
+button{
+    padding:15px 25px;
+    border:none;
+    border-radius:6px;
+    background:#0097b2;
+    color:white;
+    cursor:pointer;
+    margin:5px;
+    font-weight:bold;
+    font-size:16px;
+}
 button:hover{background:#00758a;}
-img{max-width:120px;border-radius:50%;margin:10px 0;}
+
+img{
+    max-width:150px;
+    border-radius:50%;
+    margin:10px 0;
+}
+
 #carteirinha{display:none;}
 
-/* Carteirinha responsiva grande no celular */
+/* Responsivo e grande no celular */
 @media(max-width:480px){
-    .container{padding:15px;width:95%;}
-    img{max-width:100px;}
+    .container{
+        padding:25px;
+        width:95%;
+    }
+    img{max-width:120px;}
     button{width:100%;margin:5px 0;}
+    h2{font-size:24px;}
+    p{font-size:16px;}
 }
 </style>
 </head>
 <body>
 
 <div class="container" id="loginContainer">
-<h2>Login com Google</h2>
+<h2 style="font-size:28px;">Login com Google</h2>
 <div id="g_id_onload"
      data-client_id="865470145994-cv9p33gvuoa05kt2m9gbs3rs0vrto4db.apps.googleusercontent.com"
      data-context="signin"
@@ -36,7 +77,7 @@ img{max-width:120px;border-radius:50%;margin:10px 0;}
 </div>
 
 <div class="container" id="carteirinha">
-<h2 style="color:#0097b2;">Carteirinha Comunidade Cristã</h2>
+<h2 style="color:#0097b2;font-size:26px;">Carteirinha Comunidade Cristã</h2>
 <img id="foto" src="" alt="Foto do Membro">
 <p><b>Nome:</b> <span id="nomeText"></span></p>
 <p><b>Data de Nascimento:</b> <span id="nascText"></span></p>
@@ -45,7 +86,7 @@ img{max-width:120px;border-radius:50%;margin:10px 0;}
 <p><b>Idade:</b> <span id="idadeText"></span></p>
 <p><b>Email:</b> <span id="emailText"></span></p>
 <p><b>Status:</b> <span id="statusText"></span></p>
-<img src="logo.png" style="width:60px;margin-top:10px;">
+<img src="logo.png" style="width:80px;margin-top:10px;">
 <br>
 <button onclick="gerarPDF()">Gerar PDF</button>
 <button onclick="logout()">Sair</button>
@@ -54,6 +95,23 @@ img{max-width:120px;border-radius:50%;margin:10px 0;}
 <script>
 const sheetID = "17BYpWVD-AcESh227hRor6TMkOpbfw34LUOz6b-g91vw"; // Substitua pelo ID da sua planilha
 let membroAtual = null;
+
+// Função para formatar Data de Nascimento
+function formatarData(data){
+    if(!data) return "";
+    let dt;
+    // Se for número serial do Sheets
+    if(!isNaN(data)){
+        dt = new Date((data - 25569) * 86400 * 1000);
+    } else {
+        dt = new Date(data);
+    }
+    if(isNaN(dt.getTime())) return data;
+    const dia = String(dt.getDate()).padStart(2,'0');
+    const mes = String(dt.getMonth()+1).padStart(2,'0');
+    const ano = dt.getFullYear();
+    return `${dia}/${mes}/${ano}`;
+}
 
 // Buscar membros da planilha
 async function buscarTodosMembros(){
@@ -71,7 +129,7 @@ async function buscarTodosMembros(){
         endereco:r.c[5]?.v,
         foto:r.c[6]?.v,
         status:r.c[7]?.v || "Ativo",
-        nascimento:r.c[9]?.v || "" // Nova coluna para data de nascimento (ajuste índice conforme sua planilha)
+        nascimento:r.c[9]?.v || "" // Coluna 9
     }));
 }
 
@@ -103,7 +161,7 @@ function handleCredentialResponse(response){
         document.getElementById('loginContainer').style.display="none";
         document.getElementById('carteirinha').style.display="block";
         document.getElementById('nomeText').innerText = m.nome;
-        document.getElementById('nascText').innerText = m.nascimento;
+        document.getElementById('nascText').innerText = formatarData(m.nascimento);
         document.getElementById('enderecoText').innerText = m.endereco;
         document.getElementById('funcaoText').innerText = m.funcao;
         document.getElementById('idadeText').innerText = m.idade;
@@ -129,7 +187,7 @@ async function gerarPDF(){
     doc.text("Carteirinha Comunidade Cristã",20,20);
     doc.setFontSize(12);
     doc.text(`Nome: ${membroAtual.nome}`,20,35);
-    doc.text(`Data de Nascimento: ${membroAtual.nascimento}`,20,45);
+    doc.text(`Data de Nascimento: ${formatarData(membroAtual.nascimento)}`,20,45);
     doc.text(`Endereço: ${membroAtual.endereco}`,20,55);
     doc.text(`Função: ${membroAtual.funcao}`,20,65);
     doc.text(`Idade: ${membroAtual.idade}`,20,75);
@@ -170,7 +228,7 @@ window.onload=function(){
     });
     google.accounts.id.renderButton(
         document.querySelector(".g_id_signin"),
-        { theme:"outline", size:"large" }
+        { theme:"outline", size:"large", width:300, height:60 }
     );
     google.accounts.id.prompt();
 };
