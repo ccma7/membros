@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Admin - Comunidade Cristã</title>
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f0f0f0;
+    margin:0;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+.container{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    max-width:800px;
+    width:100%;
+    text-align:center;
+    margin-bottom:20px;
+}
+input, select, button{
+    padding:10px;
+    margin:5px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    font-size:16px;
+}
+button{
+    background:#0097b2;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+button:hover{background:#00758a;}
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+th, td{
+    padding:8px;
+    border:1px solid #ccc;
+    text-align:center;
+}
+tr:nth-child(even){background:#f9f9f9;}
+@media(max-width:480px){
+    .container{padding:15px;width:95%;}
+    table, th, td{font-size:14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- Login Admin -->
+<div class="container" id="loginDiv">
+<h2>Login Admin</h2>
+<input type="text" id="adminUser" placeholder="Usuário">
+<input type="password" id="adminPass" placeholder="Senha">
+<button onclick="loginAdmin()">Entrar</button>
+</div>
+
+<!-- Dashboard -->
+<div class="container" id="dashboardDiv" style="display:none;">
+<h2>Dashboard Admin</h2>
+<button onclick="logout()">Sair</button>
+
+<!-- Botão para abrir carteirinha -->
+<div style="margin:10px 0;">
+<input type="email" id="emailCarteirinha" placeholder="Digite o email do membro">
+<button onclick="abrirCarteirinha()">Abrir Carteirinha</button>
+</div>
+
+<!-- Tabela de membros -->
+<table id="tabelaMembros">
+<thead>
+<tr>
+<th>ID</th>
+<th>Nome</th>
+<th>Email</th>
+<th>Status</th>
+<th>Alterar Status</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<script>
+const sheetID = "17BYpWVD-AcESh227hRor6TMkOpbfw34LUOz6b-g91vw"; // seu ID da planilha
+const scriptURL = "SEU_URL_DO_APLICATIVO"; // URL do Apps Script publicado
+let membros = [];
+
+// Login admin
+function loginAdmin(){
+    const user = document.getElementById('adminUser').value;
+    const pass = document.getElementById('adminPass').value;
+    if(user === "admin" && pass === "777ccma777"){
+        document.getElementById('loginDiv').style.display="none";
+        document.getElementById('dashboardDiv').style.display="block";
+        carregarMembros();
+    } else {
+        alert("Usuário ou senha incorretos");
+    }
+}
+
+// Logout
+function logout(){
+    document.getElementById('loginDiv').style.display="block";
+    document.getElementById('dashboardDiv').style.display="none";
+}
+
+// Buscar membros da planilha
+async function carregarMembros(){
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substr(47).slice(0, -2));
+    const rows = json.table.rows;
+    membros = rows.map((r,i)=>({
+        id:r.c[8]?.v || (i+1),
+        nome:r.c[1]?.v,
+        email:r.c[2]?.v,
+        status:r.c[7]?.v || "Ativo"
+    }));
+    preencherTabela();
+}
+
+// Preencher tabela
+function preencherTabela(){
+    const tbody = document.querySelector("#tabelaMembros tbody");
+    tbody.innerHTML = "";
+    membros.forEach((m,index)=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${m.id}</td>
+            <td>${m.nome}</td>
+            <td>${m.email}</td>
+            <td>${m.status}</td>
+            <td>
+                <select onchange="alterarStatus(${index}, this.value)">
+                    <option value="Ativo" ${m.status==="Ativo"?"selected":""}>Ativo</option>
+                    <option value="Inativo" ${m.status==="Inativo"?"selected":""}>Inativo</option>
+                </select>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Alterar status e atualizar na planilha
+async function alterarStatus(index, novoStatus){
+    membros[index].status = novoStatus;
+    const id = membros[index].id;
+
+    try{
+        const url = `${scriptURL}?id=${id}&status=${novoStatus}`;
+        const res = await fetch(url);
+        const text = await res.text();
+        if(text.trim() === "ok"){
+            alert(`Status de ${membros[index].nome} alterado para ${novoStatus}`);
+        } else {
+            alert("Erro ao atualizar status na planilha");
+        }
+    } catch(err){
+        alert("Erro de conexão: " + err);
+    }
+
+    preencherTabela(); // atualiza tabela local
+}
+
+// Abrir carteirinha de um membro
+function abrirCarteirinha(){
+    const email = document.getElementById('emailCarteirinha').value.trim().toLowerCase();
+    const membro = membros.find(m => m.email.trim().toLowerCase() === email);
+    
+    if(!membro){
+        alert("Membro não encontrado!");
+        return;
+    }
+
+    // Redireciona para a página da carteirinha
+    // Supondo que a página da carteirinha seja 'carteirinha.html'
+    window.open(`carteirinha.html?email=${encodeURIComponent(email)}`, "_blank");
+}
+</script>
+
+</body>
+</html>
