@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Admin</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f0f0f0;margin:0;padding:20px;}
+.container{max-width:800px;margin:auto;background:white;padding:20px;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,0.2);}
+table{width:100%;border-collapse:collapse;margin-top:20px;}
+th,td{border:1px solid #ccc;padding:10px;text-align:left;}
+th{background:#0097b2;color:white;}
+button{padding:6px 12px;border:none;border-radius:6px;background:#0097b2;color:white;cursor:pointer;margin:2px;}
+button:hover{background:#00758a;}
+input{padding:6px;margin:5px;}
+</style>
+</head>
+<body>
+<div class="container" id="loginDiv">
+<h2>Login Admin</h2>
+<input type="text" id="user" placeholder="Usuário"><br>
+<input type="password" id="pass" placeholder="Senha"><br>
+<button onclick="login()">Entrar</button>
+</div>
+
+<div class="container" id="dashboardDiv" style="display:none;">
+<h2>Dashboard Admin</h2>
+<button onclick="logout()">Sair</button>
+<table>
+  <thead>
+    <tr>
+      <th>Linha</th>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Status</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody id="tabelaMembros">
+  </tbody>
+</table>
+</div>
+
+<script>
+const WEBAPP_URL = "COLE_AQUI_SUA_URL_DO_WEB_APP";
+
+// Login simples
+function login(){
+  const user = document.getElementById('user').value;
+  const pass = document.getElementById('pass').value;
+  if(user==="admin" && pass==="777ccma777"){
+    document.getElementById('loginDiv').style.display="none";
+    document.getElementById('dashboardDiv').style.display="block";
+    carregarMembros();
+  } else {
+    alert("Usuário ou senha incorretos");
+  }
+}
+
+// Logout
+function logout(){
+  document.getElementById('loginDiv').style.display="block";
+  document.getElementById('dashboardDiv').style.display="none";
+}
+
+// Carregar membros da planilha
+async function carregarMembros(){
+  try{
+    const res = await fetch(https://script.google.com/macros/s/AKfycbyGVp2vKU00_qH19HAnW-INdsgWSaJdKakyYkehbJqAOHvDTb51E_CSm1nuTwfx3uWHsQ/exec);
+    const membros = await res.json();
+    const tbody = document.getElementById('tabelaMembros');
+    tbody.innerHTML = "";
+    membros.forEach(m=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${m.linha}</td>
+        <td>${m.nome}</td>
+        <td>${m.email}</td>
+        <td>${m.status}</td>
+        <td>
+          ${m.status==="Inativo" ? `<button onclick="ativar(${m.linha})">Ativar</button>` : ""}
+          <button onclick="abrirCarteirinha('${m.nome}','${m.email}','${m.status}')">Carteirinha</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }catch(err){
+    alert("Erro ao carregar membros: "+err);
+  }
+}
+
+// Ativar membro
+async function ativar(linha){
+  try{
+    const res = await fetch(WEBAPP_URL,{
+      method:"POST",
+      body:new URLSearchParams({linha})
+    });
+    const msg = await res.text();
+    alert(msg);
+    carregarMembros(); // atualizar tabela
+  }catch(err){
+    alert("Erro ao atualizar status: "+err);
+  }
+}
+
+// Abrir carteirinha (simples popup)
+function abrirCarteirinha(nome,email,status){
+  alert(`Carteirinha de ${nome}\nEmail: ${email}\nStatus: ${status}`);
+}
+</script>
+</body>
+</html>
