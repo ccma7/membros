@@ -150,8 +150,8 @@ async function carregarMembros(){
             const row = rows[i];
             if(row.c && row.c.length > 3) {
                 membros.push({
-                    nome: row.c[1] ? row.c[2].v : "",
-                    email: row.c[2] ? row.c[3].v : "",
+                    nome: row.c[1] ? row.c[1].v : "",
+                    email: row.c[2] ? row.c[2].v : "",
                     status: row.c[7] ? row.c[7].v : "Ativo"
                 });
             }
