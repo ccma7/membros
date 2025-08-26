@@ -121,7 +121,7 @@ async function buscarTodosMembros(){
     const json = JSON.parse(text.substr(47).slice(0, -2));
     const rows = json.table.rows;
     return rows.map((r,i)=>({
-        id:r.c[8]?.v || (i+1),
+        id:r.c[9]?.v || (i+1),
         nome:r.c[1]?.v,
         email:r.c[2]?.v,
         funcao:r.c[3]?.v,
@@ -129,7 +129,7 @@ async function buscarTodosMembros(){
         endereco:r.c[5]?.v,
         foto:r.c[6]?.v,
         status:r.c[7]?.v || "Ativo",
-        nascimento:r.c[9]?.v || "" // Coluna 9
+        nascimento:r.c[8]?.v || "" // Coluna 9
     }));
 }
 
