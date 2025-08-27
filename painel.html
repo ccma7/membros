@@ -199,7 +199,7 @@ async function carregarMembros(){
         if(rows.length === 0) return;
 
         // Linhas (a partir da segunda linha)
-        for (let i = 1; i < rows.length; i++) {
+        for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
             if (!row.c) continue; // ignora linhas nulas
 
