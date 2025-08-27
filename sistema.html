@@ -38,11 +38,7 @@ body{
   gap: 15px;
 }
 
-.containermob h2 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
+.containermob h2 { font-size: 1.5rem; margin-bottom: 10px; }
 .containermob input {
   padding: 14px;
   font-size: 1rem;
@@ -51,7 +47,6 @@ body{
   width: 100%;
   box-sizing: border-box;
 }
-
 .containermob button {
   padding: 14px;
   font-size: 1.1rem;
@@ -169,7 +164,6 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbwd7msqA560CTzPyzMUKx
 
 let membros = [];
 let membrosFiltrados = [];
-let colunas = {};
 
 // Login admin
 function loginAdmin(){
@@ -206,22 +200,14 @@ async function carregarMembros(){
 
         if(rows.length === 0) return;
 
-        // Cabeçalho
-        const header = rows[0].c.map(c => c ? c.v.toString().trim().toLowerCase() : "");
-        colunas = {
-            nome: header.findIndex(h => h.includes("nome")),
-            email: header.findIndex(h => h.includes("email")),
-            status: header.findIndex(h => h.includes("status"))
-        };
-
-        // Linhas
+        // Linhas (a partir da segunda linha)
         for(let i = 1; i < rows.length; i++) {
             const row = rows[i];
             if(row.c){
                 membros.push({
-                    nome: row.c[colunas.nome] ? row.c[colunas.nome].v : "",
-                    email: row.c[colunas.email] ? row.c[colunas.email].v : "",
-                    status: row.c[colunas.status] ? row.c[colunas.status].v : "Ativo"
+                    nome: row.c[1] ? row.c[1].v : "",
+                    email: row.c[2] ? row.c[2].v : "",
+                    status: row.c[7] ? row.c[7].v : "Ativo"
                 });
             }
         }
