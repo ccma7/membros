@@ -62,6 +62,7 @@ body {
 
 /* Container da carteirinha */
 .container {
+    display: none; /* escondida por padrão */
     background: white;
     padding: 25px 15px;
     border-radius: 12px;
@@ -178,7 +179,7 @@ body {
     <p><b>CPF:</b> <span id="idadeText"></span></p>
     <p><b>Email:</b> <span id="emailText"></span></p>
     <p><b>Status:</b> <span id="statusText"></span></p>
-    <p style="color: #ff0000;"><b>Validade: 12/2025</b></p>
+    <p class="alert"><b>Validade: 12/2025</b></p>
     <p style="font-size: 0.8rem;"><b>Lei 9982/00 - Lei no 9.982, de 14 de julho de 2000</b></p>
     <p style="color: #0097b2; font-size: 1rem;"><b>Bp. Presidente: Daniel Pereira da Costa</b></p>
     <img src="logo.png" class="logo" alt="Logo da Igreja">
@@ -187,6 +188,7 @@ body {
 </div>
 
 <script>
+// Funções já existentes continuam iguais
 const sheetID = "17BYpWVD-AcESh227hRor6TMkOpbfw34LUOz6b-g91vw"; 
 let membroAtual = null;
 
