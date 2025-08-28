@@ -2,458 +2,247 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carteirinha Comunidade Cristã</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+body{
+    font-family:Arial,sans-serif;
+    background:#f0f0f0;
+    margin:0;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 }
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.container{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    max-width:500px;
+    width:100%;
+    text-align:center;
+    margin-bottom:20px;
 }
-
-.header {
-    text-align: center;
-    margin-bottom: 20px;
-    width: 100%;
-}
-
-.header h1 {
-    color: #2c3e50;
-    font-size: 2.2rem;
-    margin-bottom: 10px;
-}
-
-.header p {
-    color: #7f8c8d;
-    font-size: 1.1rem;
-}
-
-.container {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
-    margin-bottom: 25px;
-    transition: transform 0.3s ease;
-}
-
-.container:hover {
-    transform: translateY(-5px);
-}
-
 .containerlg {
-    background: white;
-    padding: 35px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
-    margin: 20px auto;
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  margin: 40px auto 20px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-
-.containerlg h2 {
-    font-size: 2rem;
-    margin-bottom: 15px;
-    color: #2c3e50;
-}
-
+.containerlg h2 { font-size: 1.8rem; margin-bottom: 10px; }
 .containerlg input {
-    padding: 16px;
-    font-size: 1.1rem;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    width: 100%;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
+  padding: 16px; font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
-
-.containerlg input:focus {
-    border-color: #3498db;
-    outline: none;
-}
-
 .containerlg button {
-    padding: 16px;
-    font-size: 1.2rem;
-    background: #3498db;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
+  padding: 16px; font-size: 1.1rem;
+  background: #007BFF; color: white;
+  border: none; border-radius: 8px;
+  cursor: pointer; transition: background 0.3s;
 }
-
-.containerlg button:hover {
-    background: #2980b9;
-    transform: scale(1.02);
+.containerlg button:hover { background: #0056b3; }
+button{
+    padding:15px 25px;
+    border:none;
+    border-radius:6px;
+    background:#0097b2;
+    color:white;
+    cursor:pointer;
+    margin:5px;
+    font-weight:bold;
+    font-size:16px;
 }
-
-button {
-    padding: 15px 25px;
-    border: none;
-    border-radius: 8px;
-    background: #0097b2;
-    color: white;
-    cursor: pointer;
-    margin: 8px;
-    font-weight: bold;
-    font-size: 16px;
-    transition: all 0.3s ease;
+button:hover{background:#00758a;}
+img{
+    max-width:150px;
+    border-radius:50%;
+    margin:10px 0;
 }
-
-button:hover {
-    background: #00758a;
-    transform: translateY(-2px);
-}
-
-button.secondary {
-    background: #7f8c8d;
-}
-
-button.secondary:hover {
-    background: #636e72;
-}
-
-img {
-    max-width: 150px;
-    border-radius: 50%;
-    margin: 15px 0;
-    border: 4px solid #0097b2;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-#carteirinha {
-    display: none;
-}
-
+#carteirinha{display:none;}
 #loading {
-    display: none;
-    text-align: center;
-    margin: 30px 0;
+  display: none;
+  text-align: center;
+  margin: 20px 0;
 }
-
 .spinner {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #0097b2;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 20px auto;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #0097b2;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
 }
-
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
-
-.loading-text {
-    font-size: 1.2rem;
-    color: #2c3e50;
+@media(max-width:800px){
+    .container { padding:30px; width:98%; }
+    img { max-width:180px; }
+    p { font-size:18px; margin:6px 0; }
+    button { width:100%; padding:14px 0; font-size:16px; }
+    h2 { font-size:24px; }
 }
-
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.info-label {
-    font-weight: bold;
-    color: #2c3e50;
-    text-align: left;
-}
-
-.info-value {
-    color: #34495e;
-    text-align: right;
-}
-
-.validade {
-    color: #e74c3c;
-    font-weight: bold;
-    margin: 15px 0;
-    font-size: 1.1rem;
-}
-
-.lei {
-    font-size: 0.9rem;
-    color: #7f8c8d;
-    margin: 10px 0;
-}
-
-.presidente {
-    color: #0097b2;
-    font-size: 1rem;
-    margin: 15px 0;
-    font-weight: bold;
-}
-
-.logo {
-    width: 100px;
-    margin-top: 15px;
-}
-
-@media (max-width: 600px) {
-    .container, .containerlg {
-        padding: 25px;
-        width: 95%;
-    }
-    
-    .header h1 {
-        font-size: 1.8rem;
-    }
-    
-    img {
-        max-width: 130px;
-    }
-    
-    button {
-        width: 100%;
-        margin: 8px 0;
-    }
-}
-
-@media (max-width: 400px) {
-    .container, .containerlg {
-        padding: 20px;
-    }
-    
-    .containerlg h2 {
-        font-size: 1.7rem;
-    }
-}
+@media (max-width: 800px) {
+  .containerlg {
+    max-width: 100%;
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  .containerlg h2 { font-size: 2rem; }
+  .containerlg input,
+  .containerlg button { font-size: 1.3rem; padding: 18px; }
+}  
 </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>Comunidade Cristã</h1>
-    <p>Sistema de Carteirinha de Membro</p>
-</div>
-
 <div class="containerlg" id="loginContainer">
-    <h2>Login com Google</h2>
-    <div id="g_id_onload"
-         data-client_id="865470145994-cv9p33gvuoa05kt2m9gbs3rs0vrto4db.apps.googleusercontent.com"
-         data-context="signin"
-         data-ux_mode="popup"
-         data-login_uri=""
-         data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin" data-type="standard" data-theme="filled_blue" data-size="large"></div>
+<h2 style="font-size:28px;">Login com Google</h2>
+<div id="g_id_onload"
+     data-client_id="865470145994-cv9p33gvuoa05kt2m9gbs3rs0vrto4db.apps.googleusercontent.com"
+     data-context="signin"
+     data-ux_mode="popup"
+     data-login_uri=""
+     data-auto_prompt="false">
+</div>
+<div class="g_id_signin" data-type="standard"></div>
 </div>
 
 <div id="loading">
-    <div class="spinner"></div>
-    <p class="loading-text">Verificando e gerando IDs...</p>
+  <div class="spinner"></div>
+  <p>Verificando e gerando IDs...</p>
 </div>
 
 <div class="container" id="carteirinha">
-    <h2 style="color:#0097b2;font-size:26px;">Carteirinha de Membro</h2>
-    <img id="foto" src="" alt="Foto do Membro">
-    
-    <div class="info-row">
-        <span class="info-label">Nº Cadastro:</span>
-        <span class="info-value" id="idText">-</span>
-    </div>
-    
-    <div class="info-row">
-        <span class="info-label">Nome:</span>
-        <span class="info-value" id="nomeText">-</span>
-    </div>
-    
-    <div class="info-row">
-        <span class="info-label">Data de Nascimento:</span>
-        <span class="info-value" id="nascText">-</span>
-    </div>
-    
-    <div class="info-row">
-        <span class="info-label">Endereço:</span>
-        <span class="info-value" id="enderecoText">-</span>
-    </div>
-    
-    <div class="info-row">
-        <span class="info-label">Função:</span>
-        <span class="info-value" id="funcaoText">-</span>
-    </div>
-    
-    <div class="info-row">
-        <span class="info-label">CPF:</span>
-        <span class="info-value" id="idadeText">-</span>
-    </div>
-    
-    <div class="info-row">
-        <span class="info-label">Email:</span>
-        <span class="info-value" id="emailText">-</span>
-    </div>
-    
-    <div class="info-row">
-        <span class="info-label">Status:</span>
-        <span class="info-value" id="statusText">-</span>
-    </div>
-    
-    <p class="validade">Validade: 12/2025</p>
-    <p class="lei">Lei 9982/00 - Lei no 9.982, de 14 de julho de 2000</p>
-    <p class="presidente">Bp. Presidente: Daniel Pereira da Costa</p>
-    
-    <img src="https://via.placeholder.com/100?text=Logo" alt="Logo" class="logo">
-    
-    <div>
-        <button onclick="gerarPDF()">Gerar PDF</button>
-        <button onclick="logout()" class="secondary">Sair</button>
-    </div>
+<h2 style="color:#0097b2;font-size:26px;">Carteirinha de Membro Comunidade Cristã</h2>
+<img id="foto" src="" alt="Foto do Membro">
+<p style="color: #0097b2; font-weight: bold;"><b>Nº Cadastro:</b> <span id="idText"></span></p>
+<p><b>Nome:</b> <span id="nomeText"></span></p>
+<p><b>Data de Nascimento:</b> <span id="nascText"></span></p>
+<p><b>Endereço:</b> <span id="enderecoText"></span></p>
+<p><b>Função:</b> <span id="funcaoText"></span></p>
+<p><b>CPF:</b> <span id="idadeText"></span></p>
+<p><b>Email:</b> <span id="emailText"></span></p>
+<p><b>Status:</b> <span id="statusText"></span></p>
+<p style="color: #ff0000;"><b>Validade: 12/2025</b></p>
+<p style="font-size: 14px;"><b>Lei 9982/00 - Lei no 9.982, de 14 de julho de 2000</b></p>
+<p style="color: #0097b2; font-size: 16px;"><b>Bp. Presidente: Daniel Pereira da Costa</b></p>
+<img src="logo.png" style="width:80px;margin-top:10px;">
+<br>
+<button onclick="gerarPDF()">Gerar PDF</button>
+<button onclick="logout()">Sair</button>
 </div>
 
 <script>
 const sheetID = "17BYpWVD-AcESh227hRor6TMkOpbfw34LUOz6b-g91vw"; 
-// Substitua pela URL do seu Web App do Google Apps Script
-const scriptURL = "https://script.google.com/macros/s/AKfycbzzZtdGR1_WN4lOafnSDLZfYzpoWP2Rz9wiFquD83qaV1R0rtBnqr12yHPDUtzpQct-qw/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbx5Ww4q3U1k6_4QqHn8Zg3Z3Q2X2Q2X2Q2X2Q2X2Q2X2Q2X2Q2/exec";
 let membroAtual = null;
 
-function formatarData(data) {
-    if (!data) return "";
+function formatarData(data){
+    if(!data) return "";
     let dt;
-    if (!isNaN(data)) {
+    if(!isNaN(data)){
         dt = new Date((data - 25569) * 86400 * 1000);
     } else {
         dt = new Date(data);
     }
-    if (isNaN(dt.getTime())) return data;
-    const dia = String(dt.getDate()).padStart(2, '0');
-    const mes = String(dt.getMonth() + 1).padStart(2, '0');
+    if(isNaN(dt.getTime())) return data;
+    const dia = String(dt.getDate()).padStart(2,'0');
+    const mes = String(dt.getMonth()+1).padStart(2,'0');
     const ano = dt.getFullYear();
     return `${dia}/${mes}/${ano}`;
 }
 
+// Função para verificar e gerar IDs automaticamente
 async function verificarEGerarIDs() {
     showLoading(true);
     try {
-        // Simulação da chamada para o Google Apps Script
-        // Na implementação real, isso chamaria seu Web App
-        console.log("Verificando e gerando IDs...");
-        
-        // Simulando um delay de rede
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Em produção, use:
-        // const response = await fetch(scriptURL + "?action=generateMissingIDs");
-        // const result = await response.json();
-        
-        const result = { success: true, message: "IDs verificados com sucesso!" };
+        const response = await fetch(scriptURL + "?action=generateMissingIDs");
+        const result = await response.json();
         
         if (result.success) {
             console.log(result.message);
         } else {
             console.error("Erro ao gerar IDs:", result.message);
         }
-        return result;
     } catch (error) {
         console.error("Erro na requisição:", error);
-        return { success: false, message: error.message };
     } finally {
         showLoading(false);
     }
 }
 
-async function buscarTodosMembros() {
-    // Simulação de busca na planilha
-    // Em produção, isso buscaria na planilha real
-    console.log("Buscando membros...");
-    
-    // Simulando um delay de rede
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Dados de exemplo - substitua pela busca real na planilha
-    return [
-        {
-            nome: "João Silva",
-            email: "joao.silva@email.com",
-            funcao: "Membro",
-            idade: "123.456.789-00",
-            endereco: "Rua das Flores, 123",
-            foto: "https://via.placeholder.com/150?text=JS",
-            status: "Ativo",
-            nascimento: "15/03/1985",
-            id: "0001"
-        },
-        {
-            nome: "Maria Santos",
-            email: "maria.santos@email.com",
-            funcao: "Diácono",
-            idade: "987.654.321-00",
-            endereco: "Av. Principal, 456",
-            foto: "https://via.placeholder.com/150?text=MS",
-            status: "Ativo",
-            nascimento: "22/07/1990",
-            id: "0002"
-        }
-    ];
+// Buscar membros da planilha, incluindo ID da coluna 10
+async function buscarTodosMembros(){
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substr(47).slice(0, -2));
+    const rows = json.table.rows;
+    return rows.map((r,i)=>({
+        nome:r.c[1]?.v,
+        email:r.c[2]?.v,
+        funcao:r.c[3]?.v,
+        idade:r.c[4]?.v,
+        endereco:r.c[5]?.v,
+        foto:r.c[6]?.v,
+        status:r.c[7]?.v || "Ativo",
+        nascimento:r.c[8]?.v || "",
+        id:r.c[9]?.v || ""  // pega o ID da coluna 10 (J)
+    }));
 }
 
-async function buscarMembro(email) {
+// Buscar membro pelo email
+async function buscarMembro(email){
     const membros = await buscarTodosMembros();
-    const membro = membros.find(m => m.email.trim().toLowerCase() === email.trim().toLowerCase());
-    return membro;
+    const membro = membros.find(m=>m.email.trim().toLowerCase()===email.trim().toLowerCase());
+    return membro; // id já vem da planilha
 }
 
-async function handleCredentialResponse(response) {
+// Login Google
+async function handleCredentialResponse(response){
     showLoading(true);
     
     // Primeiro, verificar e gerar IDs se necessário
     await verificarEGerarIDs();
     
-    // Simulação de decode do token JWT
-    const data = {
-        email: "joao.silva@email.com",
-        name: "João Silva",
-        picture: "https://via.placeholder.com/150?text=JS"
-    };
-    
-    // Em produção, use:
-    // const data = parseJwt(response.credential);
+    const data = parseJwt(response.credential);
     const email = data.email;
     const nomeGoogle = data.name;
     const fotoGoogle = data.picture;
 
-    try {
-        const m = await buscarMembro(email);
-        if (!m) {
+    buscarMembro(email).then(m=>{
+        if(!m){
             alert("Você não está cadastrado. Preencha o formulário da comunidade.");
-            window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdXSAlqdXIBiY8yxn3KYR3Pr7V4pbLZOrS7SyFYcO9iwh7Ucw/viewform?usp=pp_url&entry.2005620554=" + encodeURIComponent(nomeGoogle) + "&entry.1045781291=" + encodeURIComponent(email);
+            window.location.href="https://docs.google.com/forms/d/e/1FAIpQLSdXSAlqdXIBiY8yxn3KYR3Pr7V4pbLZOrS7SyFYcO9iwh7Ucw/viewform?usp=pp_url&entry.2005620554="+nomeGoogle+"&entry.1045781291="+email;
             return;
         }
-        if (m.status !== "Ativo") {
+        if(m.status!=="Ativo"){
             alert("Membro inativo");
             logout();
             return;
         }
         membroAtual = m;
-        document.getElementById('loginContainer').style.display = "none";
-        document.getElementById('carteirinha').style.display = "block";
+        document.getElementById('loginContainer').style.display="none";
+        document.getElementById('carteirinha').style.display="block";
         document.getElementById('idText').innerText = m.id;
         document.getElementById('nomeText').innerText = m.nome;
         document.getElementById('nascText').innerText = formatarData(m.nascimento);
@@ -463,116 +252,73 @@ async function handleCredentialResponse(response) {
         document.getElementById('emailText').innerText = m.email;
         document.getElementById('statusText').innerText = m.status;
         document.getElementById('foto').src = m.foto || fotoGoogle;
-    } catch (error) {
-        console.error("Erro ao buscar membro:", error);
-        alert("Erro ao carregar dados. Tente novamente.");
-    } finally {
         showLoading(false);
-    }
-}
-
-function logout() {
-    membroAtual = null;
-    document.getElementById('loginContainer').style.display = "block";
-    document.getElementById('carteirinha').style.display = "none";
-}
-
-async function gerarPDF() {
-    if (!membroAtual) return;
-    
-    try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        // Adicione o conteúdo do PDF aqui
-        doc.setFontSize(20);
-        doc.setTextColor(0, 151, 178);
-        doc.text("Carteirinha Comunidade Cristã", 105, 20, { align: "center" });
-        
-        doc.setFontSize(16);
-        doc.setTextColor(0, 0, 0);
-        doc.text(`ID: ${membroAtual.id}`, 20, 40);
-        doc.text(`Nome: ${membroAtual.nome}`, 20, 50);
-        doc.text(`Data de Nascimento: ${formatarData(membroAtual.nascimento)}`, 20, 60);
-        doc.text(`Endereço: ${membroAtual.endereco}`, 20, 70);
-        doc.text(`Função: ${membroAtual.funcao}`, 20, 80);
-        doc.text(`CPF: ${membroAtual.idade}`, 20, 90);
-        doc.text(`Email: ${membroAtual.email}`, 20, 100);
-        doc.text(`Status: ${membroAtual.status}`, 20, 110);
-        
-        // Adicionar imagem se disponível
-        if (membroAtual.foto) {
-            try {
-                const img = await convertImgToBase64(membroAtual.foto);
-                doc.addImage(img, 'JPEG', 150, 30, 40, 40);
-            } catch (e) {
-                console.error("Erro ao carregar imagem:", e);
-            }
-        }
-        
-        doc.setTextColor(255, 0, 0);
-        doc.text("Validade: 12/2025", 20, 130);
-        
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(10);
-        doc.text("Lei 9982/00 - Lei no 9.982, de 14 de julho de 2000", 20, 140);
-        
-        doc.setTextColor(0, 151, 178);
-        doc.setFontSize(12);
-        doc.text("Bp. Presidente: Daniel Pereira da Costa", 20, 150);
-        
-        doc.save(`${membroAtual.nome}_carteirinha.pdf`);
-    } catch (error) {
-        console.error("Erro ao gerar PDF:", error);
-        alert("Erro ao gerar PDF. Tente novamente.");
-    }
-}
-
-async function convertImgToBase64(url) {
-    // Simulação de conversão de imagem
-    return new Promise(resolve => {
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.src = url;
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.height = img.naturalHeight;
-            canvas.width = img.naturalWidth;
-            ctx.drawImage(img, 0, 0);
-            resolve(canvas.toDataURL('image/jpeg'));
-        };
-        img.onerror = () => resolve("");
+    }).catch(error => {
+        console.error("Erro ao buscar membro:", error);
+        showLoading(false);
     });
 }
 
-function parseJwt(token) {
-    // Esta função seria usada para decodificar o token JWT em produção
+function logout(){
+    membroAtual=null;
+    document.getElementById('loginContainer').style.display="block";
+    document.getElementById('carteirinha').style.display="none";
+}
+
+async function gerarPDF(){
+    if(!membroAtual) return;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Carteirinha Comunidade Cristã",20,20);
+    doc.setFontSize(12);
+    doc.text(`ID: ${membroAtual.id}`,20,30);
+    doc.text(`Nome: ${membroAtual.nome}`,20,40);
+    doc.text(`Data de Nascimento: ${formatarData(membroAtual.nascimento)}`,20,50);
+    doc.text(`Endereço: ${membroAtual.endereco}`,20,60);
+    doc.text(`Função: ${membroAtual.funcao}`,20,70);
+    doc.text(`CPF: ${membroAtual.idade}`,20,80);
+    doc.text(`Email: ${membroAtual.email}`,20,90);
+    doc.text(`Status: ${membroAtual.status}`,20,100);
+    if(membroAtual.foto){
+        const img = await convertImgToBase64(membroAtual.foto);
+        doc.addImage(img,'JPEG',150,20,40,40);
+    }
+    const logo = await convertImgToBase64("logo.png");
+    doc.addImage(logo,'PNG',20,110,30,30);
+    doc.save(`${membroAtual.nome}_carteirinha.pdf`);
+}
+
+async function convertImgToBase64(url){
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return new Promise(resolve=>{
+        const reader = new FileReader();
+        reader.onloadend = ()=>resolve(reader.result);
+        reader.readAsDataURL(blob);
+    });
+}
+
+function parseJwt(token){
     var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+    var base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c=> '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
     return JSON.parse(jsonPayload);
 }
 
 function showLoading(show) {
     document.getElementById('loading').style.display = show ? 'block' : 'none';
-    document.getElementById('loginContainer').style.display = show ? 'none' : 'block';
 }
 
-// Inicialização do Google Sign-In
-window.onload = function() {
+window.onload=function(){
     google.accounts.id.initialize({
         client_id: "865470145994-cv9p33gvuoa05kt2m9gbs3rs0vrto4db.apps.googleusercontent.com",
         callback: handleCredentialResponse
     });
-    
     google.accounts.id.renderButton(
         document.querySelector(".g_id_signin"),
-        { theme: "filled_blue", size: "large", width: 300, height: 50 }
+        { theme:"outline", size:"large", width:300, height:60 }
     );
-    
     google.accounts.id.prompt();
 };
 </script>
