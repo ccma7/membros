@@ -75,6 +75,9 @@ table{
     width:100%;
     border-collapse:collapse;
     margin-top:10px;
+    display:block;
+    overflow-x:auto; /* rolagem horizontal em telas pequenas */
+    white-space:nowrap;
 }
 th, td{
     padding:8px;
@@ -113,6 +116,13 @@ tr:nth-child(even){background:#f9f9f9;}
     padding: 16px;
   }
 }
+.botoes-topo{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
 </style>
 </head>
 <body>
@@ -128,7 +138,12 @@ tr:nth-child(even){background:#f9f9f9;}
 <!-- Dashboard -->
 <div class="container" id="dashboardDiv" style="display:none;">
   <h2>Dashboard Admin</h2>
-  <button onclick="logout()">Sair</button>
+
+  <!-- Botões superiores -->
+  <div class="botoes-topo">
+    <button onclick="logout()">Sair</button>
+    <button onclick="abrirPlanilha()">Planilha</button>
+  </div>
 
   <!-- Contadores -->
   <div id="contadorDiv" style="margin:15px 0; font-size:16px;"></div>
@@ -159,6 +174,7 @@ tr:nth-child(even){background:#f9f9f9;}
 <script>
 const sheetID = "17BYpWVD-AcESh227hRor6TMkOpbfw34LUOz6b-g91vw";
 const scriptURL = "https://script.google.com/macros/s/AKfycbwd7msqA560CTzPyzMUKxc4vQ_aUWP2JWU0wVly9jDDOwQUXPDIa8jzA-yvgfjWHlMhBA/exec";
+const planilhaURL = `https://docs.google.com/spreadsheets/d/${sheetID}/edit`;
 
 let membros = [];
 let membrosFiltrados = [];
@@ -184,6 +200,11 @@ function logout(){
     document.getElementById('dashboardDiv').style.display = "none";
 }
 
+// Abrir planilha
+function abrirPlanilha(){
+    window.open(planilhaURL, "_blank");
+}
+
 // Buscar membros
 async function carregarMembros(){
     try {
@@ -198,15 +219,14 @@ async function carregarMembros(){
 
         if(rows.length === 0) return;
 
-        // Linhas (a partir da segunda linha)
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
-            if (!row.c) continue; // ignora linhas nulas
+            if (!row.c) continue;
 
             membros.push({
-                nome: row.c[1]?.v || "",       // Coluna 2
-                email: row.c[2]?.v || "",      // Coluna 3
-                status: row.c[7]?.v || "Ativo" // Coluna 8
+                nome: row.c[1]?.v || "",       
+                email: row.c[2]?.v || "",      
+                status: row.c[7]?.v || "Ativo" 
             });
         }
 
