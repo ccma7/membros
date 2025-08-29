@@ -2,273 +2,233 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Admin - Comunidade Cristã</title>
+<title>Painel Admin</title>
 <style>
-body{
-    font-family:Arial,sans-serif;
-    background:#f0f0f0;
-    margin:0;
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
-.container{
-    background:white;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
-    max-width:900px;
-    width:100%;
-    text-align:center;
-    margin-bottom:20px;
-}
-.containermob {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  max-width: 400px;
-  width: 90%;
-  margin: 40px auto;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  box-sizing: border-box;
-}
-.containermob h2 { font-size: 1.5rem; margin-bottom: 10px; }
-.containermob input {
-  padding: 14px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 100%;
-  box-sizing: border-box;
-}
-.containermob button {
-  padding: 14px;
-  font-size: 1.1rem;
-  background: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.containermob button:hover { background: #0056b3; }
-
-input, select, button{
-    padding:10px;
-    margin:5px;
-    border-radius:6px;
-    border:1px solid #ccc;
-    font-size:16px;
-    box-sizing:border-box;
-}
-button{
-    background:#0097b2;
-    color:white;
-    border:none;
-    cursor:pointer;
-}
-button:hover{background:#00758a;}
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-    display:block;
-    overflow-x:auto;
-    white-space:nowrap;
-}
-th, td{
-    padding:8px;
-    border:1px solid #ccc;
-    text-align:center;
-}
-tr:nth-child(even){background:#f9f9f9;}
-.loading {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(0,151,178,.3);
-    border-radius: 50%;
-    border-top-color: #0097b2;
-    animation: spin 1s ease-in-out infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-/* Ajustes mobile */
-@media(max-width:480px){
-    .container{padding:15px;width:95%;}
-    table, th, td{font-size:14px;}
-    .botoes-topo {flex-direction:column; gap:10px;}
-    .containermob h2 { font-size:1.8rem; }
-}
-@media (max-width: 600px) {
-  .containermob {
-    max-width: 100%;
-    width: 100%;
+html, body {
+    height: 100%;
     margin: 0;
-    height: 100vh;
-    justify-content: center;
-    border-radius: 0;
-  }
-  .containermob h2 { font-size: 2rem; }
-  .containermob input,
-  .containermob button {
-    font-size: 1.2rem;
-    padding: 16px;
-  }
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
 }
-.botoes-topo{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:15px;
+
+/* ===== LOGIN FULLSCREEN ===== */
+#loginDiv {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginBox {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 400px;
+    box-sizing: border-box;
+    border: 2px solid #0097b2;
+    text-align: center;
+}
+
+.loginBox h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.loginBox input {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.loginBox button {
+    width: 100%;
+    padding: 16px;
+    margin-top: 10px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.loginBox button:hover {
+    background-color: #0056b3;
+}
+
+/* ===== DASHBOARD ===== */
+#dashboard {
+    display: none;
+    padding: 15px;
+}
+
+.topBar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.topBar button {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #0097b2;
+    color: white;
+    transition: 0.3s;
+}
+
+.topBar button:hover {
+    background: #006c80;
+}
+
+#filtroInput {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* ===== TABELA ===== */
+.tableWrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+table th {
+    background: #0097b2;
+    color: white;
+}
+
+.statusSelect {
+    padding: 5px;
+    border-radius: 6px;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:480px){
+    .loginBox {
+        padding: 25px 15px;
+        border-radius: 10px;
+    }
+    .loginBox h2 { font-size: 1.8rem; }
+    .loginBox input, .loginBox button { font-size: 1.1rem; padding: 14px; }
+    .topBar { flex-direction: column; }
+    .topBar button { width: 100%; }
 }
 </style>
 </head>
 <body>
 
-<!-- Login Admin -->
-<div class="containermob" id="loginDiv">
-  <h2>Login Admin</h2>
-  <input type="text" id="adminUser" placeholder="Usuário">
-  <input type="password" id="adminPass" placeholder="Senha">
-  <button onclick="loginAdmin()">Entrar</button>
+<!-- LOGIN -->
+<div id="loginDiv">
+  <div class="loginBox">
+    <h2>Login Admin</h2>
+    <input type="text" id="adminUser" placeholder="Usuário">
+    <input type="password" id="adminPass" placeholder="Senha">
+    <button onclick="loginAdmin()">Entrar</button>
+  </div>
 </div>
 
-<!-- Dashboard -->
-<div class="container" id="dashboardDiv" style="display:none;">
-  <h2>Dashboard Admin</h2>
-
-  <!-- Botões superiores -->
-  <div class="botoes-topo">
-    <button onclick="logout()">Sair</button>
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="topBar">
+    <input type="text" id="filtroInput" placeholder="Buscar membro..." oninput="filtrarMembros()">
     <button onclick="abrirPlanilha()">Planilha</button>
+    <button onclick="logout()">Sair</button>
   </div>
 
-  <!-- Contadores -->
-  <div id="contadorDiv" style="margin:15px 0; font-size:16px;"></div>
+  <div id="contadorDiv"></div>
 
-  <!-- Filtro -->
-  <input type="text" id="filtroInput" placeholder="Filtrar por nome ou email..." 
-         onkeyup="filtrarMembros()" style="width:100%; max-width:400px; margin:10px auto; display:block;">
-
-  <!-- Loading -->
-  <div id="loadingDiv" style="display:none;">
-      <p>Carregando dados... <span class="loading"></span></p>
+  <div class="tableWrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaMembros"></tbody>
+    </table>
   </div>
-
-  <!-- Tabela -->
-  <table id="tabelaMembros">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Email</th>
-        <th>Status</th>
-        <th>Alterar Status</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
 </div>
 
 <script>
-const sheetID = "17BYpWVD-AcESh227hRor6TMkOpbfw34LUOz6b-g91vw";
-const scriptURL = "https://script.google.com/macros/s/AKfycbwd7msqA560CTzPyzMUKxc4vQ_aUWP2JWU0wVly9jDDOwQUXPDIa8jzA-yvgfjWHlMhBA/exec";
-const planilhaURL = `https://docs.google.com/spreadsheets/d/${sheetID}/edit`;
+// Dados fake para simular membros (substituir pelo fetch da planilha)
+let membros = [
+    {nome:"Diego Souza", email:"diego@email.com", status:"Ativo"},
+    {nome:"Maria Silva", email:"maria@email.com", status:"Inativo"},
+    {nome:"Carlos Santos", email:"carlos@email.com", status:"Ativo"}
+];
+let membrosFiltrados = [...membros];
 
-let membros = [];
-let membrosFiltrados = [];
-
-// Login admin
+// LOGIN
 function loginAdmin(){
     const user = document.getElementById('adminUser').value;
     const pass = document.getElementById('adminPass').value;
     if(user === "admin" && pass === "777ccma777"){
         document.getElementById('loginDiv').style.display = "none";
-        document.getElementById('dashboardDiv').style.display = "block";
-        document.getElementById('loadingDiv').style.display = "block";
-        document.getElementById('tabelaMembros').style.display = "none";
-        carregarMembros();
+        document.getElementById('dashboard').style.display = "block";
+        preencherTabela();
+        atualizarContadores();
     } else {
         alert("Usuário ou senha incorretos");
     }
 }
 
-// Logout
 function logout(){
-    document.getElementById('loginDiv').style.display = "block";
-    document.getElementById('dashboardDiv').style.display = "none";
+    document.getElementById('dashboard').style.display = "none";
+    document.getElementById('loginDiv').style.display = "flex";
+    document.getElementById('adminUser').value = "";
+    document.getElementById('adminPass').value = "";
 }
 
-// Abrir planilha
+// Planilha
 function abrirPlanilha(){
-    window.open(planilhaURL, "_blank");
+    window.open("https://docs.google.com/spreadsheets/d/SEU_ID_AQUI", "_blank");
 }
 
-// Buscar membros
-async function carregarMembros(){
-    try {
-        membros = [];
-        
-        const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
-        const res = await fetch(url);
-        const text = await res.text();
-        
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-        const rows = json.table.rows;
-
-        if(rows.length === 0) return;
-
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            if (!row.c) continue;
-
-            membros.push({
-                nome: row.c[1]?.v || "",       
-                email: row.c[2]?.v || "",      
-                status: row.c[7]?.v || "Ativo" 
-            });
-        }
-
-        membrosFiltrados = [...membros];
-        preencherTabela();
-        atualizarContadores();
-
-    } catch (error) {
-        console.error("Erro ao carregar membros:", error);
-        alert("Erro ao carregar dados da planilha. Veja o console.");
-    } finally {
-        document.getElementById('loadingDiv').style.display = "none";
-        document.getElementById('tabelaMembros').style.display = "table";
-    }
-}
-
-// Preencher tabela
+// Preencher Tabela
 function preencherTabela(){
-    const tbody = document.querySelector("#tabelaMembros tbody");
+    const tbody = document.getElementById("tabelaMembros");
     tbody.innerHTML = "";
-    
-    if(membrosFiltrados.length === 0) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td colspan="4">Nenhum membro encontrado</td>`;
-        tbody.appendChild(tr);
-        return;
-    }
-    
-    membrosFiltrados.forEach((m, index)=>{
+    membrosFiltrados.forEach((m, i) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${m.nome || "N/A"}</td>
-            <td>${m.email || "N/A"}</td>
-            <td>${m.status || "Ativo"}</td>
+            <td>${m.nome}</td>
+            <td>${m.email}</td>
             <td>
-                <select onchange="alterarStatus('${m.email}', this.value, ${index})">
-                    <option value="Ativo" ${m.status === "Ativo" ? "selected" : ""}>Ativo</option>
-                    <option value="Inativo" ${m.status === "Inativo" ? "selected" : ""}>Inativo</option>
+                <select class="statusSelect" onchange="alterarStatus('${m.email}', this.value, ${i})">
+                    <option value="Ativo" ${m.status==="Ativo"?"selected":""}>Ativo</option>
+                    <option value="Inativo" ${m.status==="Inativo"?"selected":""}>Inativo</option>
                 </select>
             </td>
         `;
@@ -299,27 +259,12 @@ function atualizarContadores(){
 }
 
 // Alterar status
-async function alterarStatus(email, novoStatus, index){
-    try {
-        const membro = membros.find(m => m.email === email);
-        if(membro) membro.status = novoStatus;
-
-        membrosFiltrados[index].status = novoStatus;
-        preencherTabela();
-        atualizarContadores();
-        
-        const url = `${scriptURL}?email=${encodeURIComponent(email)}&status=${encodeURIComponent(novoStatus)}`;
-        const res = await fetch(url);
-        const text = await res.text();
-        
-        if(text.trim() !== "ok") {
-            alert("Erro ao atualizar status na planilha: " + text);
-            carregarMembros();
-        }
-    } catch(err) {
-        alert("Erro de conexão: " + err);
-        carregarMembros();
-    }
+function alterarStatus(email, novoStatus, index){
+    const membro = membros.find(m => m.email === email);
+    if(membro) membro.status = novoStatus;
+    membrosFiltrados[index].status = novoStatus;
+    preencherTabela();
+    atualizarContadores();
 }
 </script>
 
