@@ -35,6 +35,7 @@ body{
   display: flex;
   flex-direction: column;
   gap: 15px;
+  box-sizing: border-box;
 }
 .containermob h2 { font-size: 1.5rem; margin-bottom: 10px; }
 .containermob input {
@@ -63,6 +64,7 @@ input, select, button{
     border-radius:6px;
     border:1px solid #ccc;
     font-size:16px;
+    box-sizing:border-box;
 }
 button{
     background:#0097b2;
@@ -76,7 +78,7 @@ table{
     border-collapse:collapse;
     margin-top:10px;
     display:block;
-    overflow-x:auto; /* rolagem horizontal em telas pequenas */
+    overflow-x:auto;
     white-space:nowrap;
 }
 th, td{
@@ -99,6 +101,8 @@ tr:nth-child(even){background:#f9f9f9;}
 @media(max-width:480px){
     .container{padding:15px;width:95%;}
     table, th, td{font-size:14px;}
+    .botoes-topo {flex-direction:column; gap:10px;}
+    .containermob h2 { font-size:1.8rem; }
 }
 @media (max-width: 600px) {
   .containermob {
